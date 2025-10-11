@@ -5,7 +5,7 @@ import { ApiResponseSchema } from "@/lib/schema"
 export async function GET() {
   try {
     const sql = getSql()
-    const rows = await sql /*sql*/`
+    const rows = await sql `
       SELECT p.id, p.goal, p.constraints, p.created_at
       FROM plans p
       ORDER BY p.created_at DESC
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const payload = await req.json()
     const data = ApiResponseSchema.parse(payload)
     const sql = getSql()
-    await sql /*sql*/`
+    await sql `
       INSERT INTO plans (id, goal, constraints, created_at)
       VALUES (${data.plan.id}, ${data.plan.goal}, ${JSON.stringify(data.plan.constraints)}, ${data.plan.createdAt})
     `

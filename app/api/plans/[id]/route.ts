@@ -3,7 +3,7 @@ import { getSql } from "@/lib/db/neon"
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
     const sql = getSql()
-    const planRows = await sql /*sql*/`
+    const planRows = await sql `
       SELECT id, goal, constraints, created_at
       FROM plans
       WHERE id = ${params.id}

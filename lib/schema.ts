@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const ConstraintsSchema = z.object({
-  deadline: z.string().datetime().optional(), // ISO
+  deadline: z.string().datetime().optional(), 
   timeboxDays: z.number().int().positive().optional(),
   workDays: z.array(z.enum(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])).optional(),
   hoursPerDay: z.number().positive().max(24).optional(),
@@ -17,7 +17,7 @@ export const LlmTaskDraftSchema = z.object({
   title: z.string().min(2),
   description: z.string().default(""),
   estimatedHours: z.number().positive().max(1000),
-  // LLM provides dependencies by title to keep the output human-friendly
+  
   dependsOnTitles: z.array(z.string()).default([]),
   priority: z.enum(["low", "medium", "high"]).optional(),
   riskLevel: z.enum(["low", "medium", "high"]).optional(),
@@ -25,7 +25,7 @@ export const LlmTaskDraftSchema = z.object({
 
 export const LlmDraftSchema = z.object({
   tasks: z.array(LlmTaskDraftSchema).min(1).max(60),
-  rationale: z.string().optional(), // concise justification notes (no CoT)
+  rationale: z.string().optional(), 
 })
 
 export type Constraints = z.infer<typeof ConstraintsSchema>
@@ -36,11 +36,11 @@ export type Task = {
   title: string
   description: string
   estimatedHours: number
-  dependsOn: string[] // task ids
+  dependsOn: string[] 
   priority?: "low" | "medium" | "high"
   riskLevel?: "low" | "medium" | "high"
-  earliestStart?: string // ISO
-  dueDate?: string // ISO
+  earliestStart?: string 
+  dueDate?: string 
   isCritical?: boolean
 }
 
@@ -48,11 +48,11 @@ export type Plan = {
   id: string
   goal: string
   constraints?: Constraints
-  createdAt: string // ISO
+  createdAt: string 
 }
 
 export type PlanSummary = {
-  criticalPath: string[] // task ids
+  criticalPath: string[] 
   feasibility: "feasible" | "tight" | "infeasible"
   notes: string[]
 }

@@ -17,13 +17,13 @@ export async function POST(req: NextRequest) {
     }
     const { goal, constraints } = parsed.data
 
-    // 1) LLM: get structured draft
+    
     const draft = await generateDraftFromGoal(goal, constraints)
 
-    // 2) Deterministic scheduling
+    
     const { tasks, criticalPath, feasibility, notes } = scheduleDraft(goal, draft.tasks, constraints)
 
-    // 3) Build plan response
+    
     const plan: Plan = {
       id: crypto.randomUUID(),
       goal,

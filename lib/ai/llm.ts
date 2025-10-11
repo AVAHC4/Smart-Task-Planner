@@ -26,6 +26,6 @@ export async function generateDraftFromGoal(
     temperature: 0.3,
   })
 
-  // object is already validated by LlmDraftSchema
+  
   return object
 }

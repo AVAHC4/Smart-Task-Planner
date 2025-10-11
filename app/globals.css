@@ -46,7 +46,7 @@
   --shadow-spread: 0px;
   --shadow-opacity: 1;
   --shadow-color: #000000;
-  /* Neo-brutalism shadow var used by ThemeCustomizer; default offset shadow */
+  
   --neo-shadow: 4px 4px 0 0 var(--shadow-color);
 }
 
@@ -131,7 +131,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-serif: "Source Serif 4", "Source Serif 4 Fallback";
-  /* computed shadow variables below - do not modify */
+  
   --shadow-2xs: var(--shadow-x) var(--shadow-y)
     color-mix(in srgb, var(--shadow-color) calc(var(--shadow-opacity) * 100%), transparent);
   --shadow-xs: var(--shadow-x) var(--shadow-y) var(--shadow-blur) var(--shadow-spread)
@@ -168,13 +168,13 @@
   }
 }
 
-/* Neo-brutalist components */
+
 .neo-card {
   background: var(--background);
   color: var(--foreground);
   border: 4px solid var(--border);
   box-shadow: var(--neo-shadow);
-  border-radius: 0; /* flat */
+  border-radius: 0; 
 }
 
 .neo-btn {

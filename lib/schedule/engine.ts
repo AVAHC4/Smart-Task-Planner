@@ -13,13 +13,13 @@ type DraftTask = {
   riskLevel?: "low" | "medium" | "high"
 }
 
-type Graph = Map<string, Set<string>> // id -> dependencies (ids)
+type Graph = Map<string, Set<string>> 
 
 const DEFAULT_WORK_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 const DEFAULT_HOURS_PER_DAY = 8
 
 function toWeekdayIndex(d: Date) {
-  // 0 Sun ... 6 Sat
+  
   return d.getUTCDay()
 }
 
@@ -30,7 +30,7 @@ function isWorkday(date: Date, workDays: string[]): boolean {
 
 function startOfWorkday(date: Date) {
   const d = new Date(date)
-  d.setUTCHours(9, 0, 0, 0) // 9:00 as default window start (UTC)
+  d.setUTCHours(9, 0, 0, 0) 
   return d
 }
 
@@ -44,9 +44,9 @@ function addWorkingHours(start: Date, hours: number, workDays: string[], hoursPe
   let remaining = hours
   let cursor = new Date(start)
 
-  // If before workday start, jump to start. If after, move to next workday start.
+  
   if (!isWorkday(cursor, workDays) || cursor > endOfWorkday(cursor, hoursPerDay)) {
-    // move to next workday 9:00
+    
     do {
       cursor.setUTCDate(cursor.getUTCDate() + 1)
       cursor = startOfWorkday(cursor)
@@ -57,7 +57,7 @@ function addWorkingHours(start: Date, hours: number, workDays: string[], hoursPe
 
   while (remaining > 0) {
     if (!isWorkday(cursor, workDays)) {
-      // advance to next workday start
+      
       do {
         cursor.setUTCDate(cursor.getUTCDate() + 1)
         cursor = startOfWorkday(cursor)
@@ -72,7 +72,7 @@ function addWorkingHours(start: Date, hours: number, workDays: string[], hoursPe
     remaining -= consume
 
     if (remaining > 0) {
-      // move to next workday start
+      
       do {
         cursor.setUTCDate(cursor.getUTCDate() + 1)
         cursor = startOfWorkday(cursor)
@@ -95,11 +95,11 @@ function topoSort(ids: string[], graph: Graph): { order: string[]; hasCycle: boo
   for (const [id, deps] of graph.entries()) {
     for (const dep of deps) {
       indeg.set(id, indeg.get(id) || 0)
-      indeg.set(dep, (indeg.get(dep) || 0) + 0) // no change; we record edge as dep->id below
+      indeg.set(dep, (indeg.get(dep) || 0) + 0) 
     }
   }
 
-  // compute proper indegrees: count incoming edges for each node
+  
   const incoming = new Map<string, number>(ids.map((i) => [i, 0]))
   for (const [id, deps] of graph.entries()) {
     for (const dep of deps) {
@@ -126,7 +126,7 @@ function topoSort(ids: string[], graph: Graph): { order: string[]; hasCycle: boo
 function longestPathLengths(order: string[], graph: Graph, durations: Map<string, number>): Map<string, number> {
   const dist = new Map<string, number>()
   order.forEach((id) => dist.set(id, 0))
-  // For each node in topological order, relax edges to children
+  
   for (const u of order) {
     const du = dist.get(u) || 0
     const durU = durations.get(u) || 0
@@ -157,7 +157,7 @@ export function scheduleDraft(
   const now = new Date()
   const planStart = startOfWorkday(now)
 
-  // Build tasks and map titles -> ids
+  
   const idByTitle = new Map<string, string>()
   const tasks: Task[] = draftTasks.map((dt) => {
     const id = uuid()
@@ -173,7 +173,7 @@ export function scheduleDraft(
     }
   })
 
-  // Apply dependencies by matching title -> id
+  
   const titleToTask = new Map(tasks.map((t) => [t.title, t]))
   for (const dt of draftTasks) {
     const t = titleToTask.get(dt.title)!
@@ -182,36 +182,36 @@ export function scheduleDraft(
       .filter((x): x is string => Boolean(x) && x !== t.id)
   }
 
-  // Build dependency graph
+  
   const graph: Graph = new Map(tasks.map((t) => [t.id, new Set<string>(t.dependsOn)]))
 
-  // Topological order and cycle detection
+  
   const ids = tasks.map((t) => t.id)
   const { order, hasCycle } = topoSort(ids, graph)
   const notes: string[] = []
   if (hasCycle) {
     notes.push("Detected dependency cycle(s). Removed some edges to proceed.")
-    // naive cycle break: clear dependencies for any node still not in order and retry once
-    // In practice, order length < ids.length signals cycles; we remove deps from nodes not in order
+    
+    
     const inOrder = new Set(order)
     for (const id of ids) {
       if (!inOrder.has(id)) {
-        graph.set(id, new Set()) // drop deps
+        graph.set(id, new Set()) 
       }
     }
   }
 
-  // Recompute order after potential cycle fix
+  
   const { order: finalOrder } = topoSort(ids, graph)
 
-  // Compute schedule using working hours
+  
   const byId = new Map(tasks.map((t) => [t.id, t]))
   const finishTimes = new Map<string, Date>()
   const startTimes = new Map<string, Date>()
 
   for (const id of finalOrder) {
     const t = byId.get(id)!
-    // earliest start is max(finish(dep)) or planStart
+    
     let earliest = new Date(planStart)
     for (const dep of graph.get(id) || []) {
       const depFinish = finishTimes.get(dep)
@@ -225,7 +225,7 @@ export function scheduleDraft(
     t.dueDate = finish.toISOString()
   }
 
-  // Critical path: find nodes with max distance in hours
+  
   const durations = new Map<string, number>(tasks.map((t) => [t.id, t.estimatedHours]))
   const dist = longestPathLengths(finalOrder, graph, durations)
   let maxEnd = Number.NEGATIVE_INFINITY
@@ -238,7 +238,7 @@ export function scheduleDraft(
     }
   }
 
-  // Backtrack to get critical path (approx via predecessor with greatest distance)
+  
   const criticalPath: string[] = []
   if (endNode) {
     let current = endNode
@@ -265,13 +265,13 @@ export function scheduleDraft(
       }
     }
   }
-  // mark tasks on critical path
+  
   const cpSet = new Set(criticalPath)
   for (const t of tasks) {
     t.isCritical = cpSet.has(t.id)
   }
 
-  // Feasibility check against constraints
+  
   let feasibility: "feasible" | "tight" | "infeasible" = "feasible"
   if (constraints?.deadline) {
     const latestFinish = [...finishTimes.values()].reduce((a, b) => (a > b ? a : b), planStart)
@@ -280,7 +280,7 @@ export function scheduleDraft(
       feasibility = "infeasible"
       notes.push("Schedule exceeds the deadline. Consider scope reduction or parallelization.")
     } else {
-      // if within 10% of deadline window, call it tight
+      
       const windowHrs = (deadline.getTime() - planStart.getTime()) / (1000 * 60 * 60)
       if (
         maxEnd / (constraints.hoursPerDay ?? DEFAULT_HOURS_PER_DAY) >

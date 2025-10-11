@@ -18,7 +18,7 @@ export function applyTheme(vars: Partial<ThemeVars>) {
     if (!v) continue
     root.style.setProperty(k, v)
   }
-  // Ensure readable contrast for text vs background if customized
+  
   const bg = getVar("--background") || "#fffbe6"
   const fg = getVar("--foreground") || bestForeground(bg)
   if (vars["--background"] && !vars["--foreground"]) {
@@ -57,7 +57,7 @@ export function getVar(name: string): string | null {
   return v?.trim() || null
 }
 
-// Simple luminance-based foreground chooser
+
 export function bestForeground(bgHex: string): string {
   const { r, g, b } = hexToRgb(bgHex)
   const L = 0.2126 * srgb(r) + 0.7152 * srgb(g) + 0.0722 * srgb(b)

@@ -5,13 +5,13 @@ import type { Task } from "@/lib/schema"
 
 type Row = {
   name: string
-  duration: number // hours
+  duration: number 
 }
 
 export default function PlanTimeline({ tasks }: { tasks: Task[] }) {
   if (!tasks?.length) return null
 
-  // Determine baseline start
+  
   const starts = tasks.map((t) => (t.earliestStart ? new Date(t.earliestStart).getTime() : Number.POSITIVE_INFINITY))
   const minStartMs = Math.min(...starts)
   const planStart = isFinite(minStartMs) ? minStartMs : Date.now()
