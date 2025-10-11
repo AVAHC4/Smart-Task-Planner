@@ -1,15 +1,4 @@
-/*
-  Comment stripping tool
-  - JS/TS/TSX/JSX: uses TypeScript scanner to remove comments while preserving:
-    - ESLint directives (// eslint-*, slash-star eslint star-slash)
-    - TS directives (// @ts-ignore, // @ts-expect-error, // @ts-nocheck, // @ts-check)
-    - Important JSDoc pragmas (JSDoc with @type, @typedef, @param, @returns, @jsx, @jsxImportSource)
-  - CSS/SCSS: remove block comments (keeps content within strings)
-  - SQL: remove -- line comments and block comments (keeps content within strings)
-  - .env*: remove # comments not inside quotes
-  - Excludes: node_modules, .next, out, build, .vercel, public
-  - Supports --dry flag for dry run
-*/
+
 
 const fs = require('fs');
 const path = require('path');
