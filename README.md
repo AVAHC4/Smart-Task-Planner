@@ -82,25 +82,7 @@ This demo is stateless by default. To add Postgres:
 - Add endpoints: /api/plans (POST/GET), /api/plans/[id] (GET).
 - Follow the "Neon Integration Guidelines" if you enable it later.
 
-## Demo Video
 
-Record a short screen capture of:
-1) Entering a goal and constraints
-2) Generating a plan
-3) Reviewing tasks, dependencies, timeline
-4) Trying a tight/infeasible deadline and seeing the warnings
-5) Customizing the theme and saving/loading plans
-
-Then place it at: public/demo.mp4 and commit to GitHub.
-
-## Evaluation Guidance
-
-- Completeness of decomposition: The LLM prompt encourages 8–25 precise tasks with dependencies.
-- Timeline logic: Deterministic working-hours scheduler + critical path analysis.
-- Reasoning quality: Concise "rationale" stored server-side (logged/inspected if needed).
-- Architecture: Clean API boundary, typed schemas, isolated scheduling engine, accessible UI.
-- Plan Storage: Functionality of saving, loading, exporting, and deleting plans.
-- Theme Customization: Ability to switch presets or customize colors, and toggle shadow styles.
 
 ## Notes and Limits
 
